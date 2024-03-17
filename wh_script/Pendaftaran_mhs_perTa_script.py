@@ -9,6 +9,8 @@ import re
 import pandas as pd
 import numpy as np
 
+from wh_script.progress_info import use_progress_tracker
+
 
 class PendaftaranMhsPerTA:
     def __init__(self, is_dev=False):
@@ -133,8 +135,16 @@ class PendaftaranMhsPerTA:
         tgl_masuk = []
         
         total_data = len(dfMhs2)
+        i = 0
+        (step, part, thresshold) = use_progress_tracker(total_data)
 
         for index, row in dfMhs2.iterrows():
+            i+=1
+            if i >= thresshold:
+                print(f"{i} from {total_data} : {i/total_data * 100}%")
+                step+=1
+                thresshold = part * step
+
             ### Tanggal Mulai Kuliah ###
             th = row['nim'][4:8]
             date_str = '01-09-' + th
