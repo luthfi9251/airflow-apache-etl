@@ -53,7 +53,7 @@ with DAG(
 
         cursor.close()
         conn.close()
-        file_temp_handler.clear_temp_folder(temp_file)
+        file_temp_handler.clear_temp_folder([temp_file])
 
 
     get_data_task = PythonOperator(

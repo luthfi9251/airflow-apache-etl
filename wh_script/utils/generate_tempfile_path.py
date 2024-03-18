@@ -19,8 +19,14 @@ class FileTemporaryHandler:
     def get_temporary_file(self, tag):
         return self.history.get(tag)
 
-    def clear_temp_folder(self, path):
-        os.remove(path)
+    def clear_temp_folder(self, paths):
+
+        for path in paths:
+            try:
+                os.remove(path)
+            except FileNotFoundError as e:
+                continue
+
 
 # a = FileTemporaryHandler()
 # a.test()

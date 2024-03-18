@@ -76,7 +76,7 @@ with DAG(
     def compare_data(**kwargs):
         ti = kwargs['ti']
         file_mhs = ti.xcom_pull(task_ids='transform_data', key=None)
-        file_mhs_wh = ti.xcom_pull(task_ids='get_data_wh_exist', key=None)
+        file_mhs_wh = ti.xcom_pull(task_ids='get_wh_data', key=None)
 
         path = {
             "dfMhs": file_mhs,
@@ -87,8 +87,36 @@ with DAG(
         compared_data_file_path = file_temp_handler.generate_temporary_file('compared_data','csv')
 
         compared_data.to_csv(compared_data_file_path, index=False)
-        return compared_data
+        return compared_data_file_path
 
+    def load_data(**kwargs):
+        ti = kwargs['ti']
+        compared_data = ti.xcom_pull(task_ids='compare_data', key=None)
+        conn = mysql_hook.get_conn()
+        cursor = conn.cursor()
+
+        path = {
+            "dfFiltered": compared_data
+        }
+
+        script_pendaftaran_mhs.load_data(path, cursor, conn)
+
+        return None
+    
+    def clean_up(**kwargs):
+        ti = kwargs['ti']
+        file_mhs_daftar = ti.xcom_pull(task_ids='get_data_mhs', key=None)
+        (file_mhs_yud, file_mhs_yud_archive) = ti.xcom_pull(task_ids='get_yudisium_data', key=None)
+        file_mhs = ti.xcom_pull(task_ids='transform_data', key=None)
+        file_mhs_wh = ti.xcom_pull(task_ids='get_wh_data', key=None)
+        compared_data = ti.xcom_pull(task_ids='compare_data', key=None)
+
+        paths = [
+            file_mhs_daftar, file_mhs_yud, file_mhs_yud_archive, file_mhs, file_mhs_wh, compared_data
+        ]
+        print(paths)
+        file_temp_handler.clear_temp_folder(paths)
+        
 
     get_data_mhs_task = PythonOperator(
         task_id='get_data_mhs',
@@ -115,6 +143,18 @@ with DAG(
         python_callable=compare_data,
         provide_context=True,
     )
+    load_data_task = PythonOperator(
+        task_id='load_data',
+        python_callable=load_data,
+        provide_context=True,
+    )
+    cleanup_task = PythonOperator(
+        task_id='clean_up',
+        python_callable=clean_up,
+        provide_context=True,
+    )
 
     [get_data_mhs_task, get_yudisium_data_task] >> transform_data_task
-    [get_wh_data_task, transform_data_task] >> compare_data_task
+    [get_wh_data_task, transform_data_task] >> compare_data_task 
+    compare_data_task >> load_data_task
+    load_data_task >> cleanup_task

@@ -9,7 +9,7 @@ import re
 import pandas as pd
 import numpy as np
 
-from wh_script.progress_info import use_progress_tracker
+from wh_script.utils.progress_info import use_progress_tracker
 
 
 class PendaftaranMhsPerTA:
@@ -137,6 +137,7 @@ class PendaftaranMhsPerTA:
         total_data = len(dfMhs2)
         i = 0
         (step, part, thresshold) = use_progress_tracker(total_data)
+        print(f"Processing {total_data}")
 
         for index, row in dfMhs2.iterrows():
             i+=1
@@ -286,8 +287,18 @@ class PendaftaranMhsPerTA:
         '''
         
         total_data = len(dfFiltered)
+        i = 0
+
+        (step, part, thresshold) = use_progress_tracker(total_data)
+        print(f"Processing {total_data}")
 
         for index, dataframe in enumerate(dfFiltered.iterrows()):
+            i+=1
+            if i >= thresshold:
+                print(f"{i} from {total_data} : {i/total_data * 100}%")
+                step+=1
+                thresshold = part * step
+                
             row = dataframe[1]
 
             data = { 'nim': row['nim'], 'nama': row['nama'], 'kode_prodi': row['kode_prodi'], 
