@@ -127,7 +127,19 @@ with DAG(
         return "success"
 
     def clean_up(**kwargs):
-        pass
+        ti = kwargs.get("ti")
+        kuliah_mhs_file = ti.xcom_pull(task_ids='get_data_mhs', key=None)
+        ips_mhs_file = ti.xcom_pull(task_ids='get_data_ips', key=None)
+        kuliah_ips_mhs_file = ti.xcom_pull(task_ids='add_ips_mhs_periode', key=None)
+        ips_mhs_file_wh = ti.xcom_pull(task_ids='get_data_pendaftar_wh', key=None)
+        kuliah_ips_filtered_file = ti.xcom_pull(task_ids='filter_angkatan_mhs', key=None)
+        kuliah_mhs_wh_file = ti.xcom_pull(task_ids='get_data_mhs_wh', key=None)
+        wh_ipk_file = ti.xcom_pull(task_ids='get_data_ipk_wh', key=None)
+        data_file = ti.xcom_pull(task_ids='add_ipk_semester', key=None)
+
+        temp_files = [kuliah_mhs_file, ips_mhs_file, kuliah_ips_mhs_file, ips_mhs_file_wh, kuliah_ips_filtered_file, kuliah_mhs_wh_file, kuliah_mhs_wh_file, wh_ipk_file, data_file]
+        
+        file_temp_handler.clear_temp_folder([temp_files])
 
     get_data_mhs_periode_task = PythonOperator(
         task_id='get_data_mhs',
