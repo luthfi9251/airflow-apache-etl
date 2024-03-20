@@ -43,9 +43,15 @@ with DAG(
         script_nilai_mhs.synchronize_to_db(cursor, kwargs["params"].get("ta"), conn, temp_file)
     
     def update_database(**kwargs):
-        pass
+        conn = mysql_hook.get_conn()
+        cursor = conn.cursor()
+
+        script_nilai_mhs.update_database(cursor, conn, kwargs["params"].get("ta"))
+
     def clean_up(**kwargs):
-        pass
+        ti = kwargs['ti']
+        temp_file = ti.xcom_pull(task_ids='get_data_nilai', key=None)
+        file_temp_handler.clear_temp_folder([temp_file])
 
     get_nilai_task = PythonOperator(
         task_id='get_data_nilai',
@@ -67,3 +73,6 @@ with DAG(
         python_callable=clean_up,
         provide_context=True,
     )
+
+    get_nilai_task >> load_data_task >> update_database_task
+    load_data_task >> clean_up_task

@@ -2,5 +2,7 @@ from wh_script.Pengajaran_dosen_perTa_script import PengajaranDosenPerTA
 from wh_script.Pendaftaran_mhs_perTa_script import PendaftaranMhsPerTA
 from wh_script.Yudisium_mhs_perPeriode import YudisiumMhs
 from wh_script.Nilai_mhs_perTa_script import NilaiMhsPerTA
+from wh_script.Kuliah_mhs_perTa_script import KuliahMhsPerTa
 from wh_script.utils.progress_info import use_progress_tracker
 from wh_script.utils.generate_tempfile_path import FileTemporaryHandler
+from wh_script.utils.tahunajaran import TahunAjaran
