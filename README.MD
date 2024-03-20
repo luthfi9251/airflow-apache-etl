@@ -36,5 +36,5 @@ Untuk menjalankan script, pastikan airflow sudah memiliki koneksi database yang 
 -   [x] Pengajaran_dosen_perta
 -   [x] Yudisium_mhs_angkatan
 -   [x] Pendaftaran_mhs_perta
--   [ ] Nilai_mhs_perta
--   [ ] Kuliah_mhs_perta
+-   [x] Nilai_mhs_perta
+-   [x] Kuliah_mhs_perta
