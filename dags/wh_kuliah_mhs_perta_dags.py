@@ -186,6 +186,11 @@ with DAG(
         python_callable=load_data,
         provide_context=True,
     )
+    clean_up_task = PythonOperator(
+        task_id='clean_up',
+        python_callable=clean_up,
+        provide_context=True,
+    )
 
     [get_data_mhs_periode_task, get_data_ips_mhs_task] >> add_ips_mhs_periode_task
 
@@ -194,3 +199,5 @@ with DAG(
     [filter_angkatan_mhs_task, get_data_mhs_wh_task, get_data_ipk_wh_task] >> add_ipk_semester_task 
 
     add_ipk_semester_task >> load_data_task
+
+    load_data_task >> clean_up_task
