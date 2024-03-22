@@ -1,15 +1,13 @@
 import pandas as pd
 from airflow.models.dag import DAG
 from airflow.operators.python import PythonOperator
-from airflow.hooks.mysql_hook import MySqlHook
 from airflow.models.param import Param, ParamsDict
 
 
 import sys
 sys.path.insert(0, '/opt/airflow')
-from wh_script import YudisiumMhs, FileTemporaryHandler
+from wh_script import YudisiumMhs, FileTemporaryHandler, get_connection_db
 
-DB_CONNECTION_ID = "mysql_connection_psidevel"
 
 with DAG(
     dag_id="wh_yudisium_per_periode",
@@ -19,7 +17,7 @@ with DAG(
 ) as dag:
     script_yudisium_mhs = YudisiumMhs()
     file_temp_handler = FileTemporaryHandler()
-    mysql_hook = MySqlHook(mysql_conn_id=DB_CONNECTION_ID)
+    mysql_hook = get_connection_db()
 
     def get_data_yudisium(**kwargs):
         params = kwargs.get("params")

@@ -6,3 +6,4 @@ from wh_script.Kuliah_mhs_perTa_script import KuliahMhsPerTa
 from wh_script.utils.progress_info import use_progress_tracker
 from wh_script.utils.generate_tempfile_path import FileTemporaryHandler
 from wh_script.utils.tahunajaran import TahunAjaran
+from wh_script.utils.get_db_connection import get_connection_db
