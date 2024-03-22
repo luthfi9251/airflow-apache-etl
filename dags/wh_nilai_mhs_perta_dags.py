@@ -38,13 +38,13 @@ with DAG(
         conn = mysql_hook.get_conn()
         cursor = conn.cursor()
 
-        script_nilai_mhs.synchronize_to_db(cursor, kwargs["params"].get("ta"), conn, temp_file)
+        script_nilai_mhs.synchronize_to_db(cursor, kwargs["params"].get("tahun_ajaran"), conn, temp_file)
     
     def update_database(**kwargs):
         conn = mysql_hook.get_conn()
         cursor = conn.cursor()
 
-        script_nilai_mhs.update_database(cursor, conn, kwargs["params"].get("ta"))
+        script_nilai_mhs.update_database(cursor, conn, kwargs["params"].get("tahun_ajaran"))
 
     def clean_up(**kwargs):
         ti = kwargs['ti']
